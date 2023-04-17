@@ -39,13 +39,13 @@ const Navbar = () => {
     >
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex">
-          <a
-            href="/"
+          <Link
+            to="/"
             class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
           >
             <img class="w-8 h-8 mr-2" src="../../house.png" alt="logo" />
             The Property Palace
-          </a>
+          </Link>
         </div>
 
         <ul className="list-none hidden sm:flex flex-row gap-10">
@@ -57,7 +57,7 @@ const Navbar = () => {
               } hover:text-white text-[18px] font-medium cursor-pointer`}
               onClick={() => setActive(nav.title)}
             >
-              {user && nav.id === 'signed-in' ? (
+              {user && nav.id === 'my-profile' ? (
                 <Link
                   to="/userDetails"
                   className=""
@@ -66,12 +66,13 @@ const Navbar = () => {
                     window.scrollTo(0, 0);
                   }}
                 >
-                  <>tEst</>
-                  {/* <p className="text-white text-[18px] font-bold cursor-pointer flex">
+                  <p className="text-white text-[18px] font-bold cursor-pointer flex">
                     Welcome &nbsp;
-                    <span className="sm:block hidden"> | {username}</span>
-                  </p> */}
+                    <span className="sm:block hidden"> | {user.username}</span>
+                  </p>
                 </Link>
+              ) : !user && nav.id === 'my-profile' ? (
+                <></>
               ) : user && nav.id === 'sign-in' ? (
                 <></>
               ) : !user && nav.id === 'sign-out' ? (

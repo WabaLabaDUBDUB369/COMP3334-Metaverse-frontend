@@ -20,6 +20,7 @@ const Hero = () => {
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
+
       fetch('http://localhost:5000/allUsers ',
           {
           method: "GET",
