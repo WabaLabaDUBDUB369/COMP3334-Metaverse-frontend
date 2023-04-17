@@ -20,13 +20,13 @@ export default function UserHome({ userData }) {
                       </div>
                       <div>
                           <label for="money" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Money Remaining</label>
-                          <input disabled value={userData.myMoney} type="text" name="money" id="money" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
+                          <input disabled value={userData.money} type="text" name="money" id="money" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
                       </div>
                       <div>
                           <label for="realestate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Properties Owned</label>
                           <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                 {
-                                  userData.myRealEstate.map((item)=> { <li class="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">{item.realEstateType}</li> })
+                                  userData.realEstateOwned.map((item)=> { return(<li class="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">{item.realEstateType}</li>) })
                                 }
                           </ul>
                       </div>

@@ -16,7 +16,7 @@ export default function UserDetails() {
         console.log(data, 'userData');
         setUserData(data.data);
       });
-  }, []);
+    }, []);
 
   return <UserHome userData={userData} />;
 }
