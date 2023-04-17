@@ -1,7 +1,7 @@
 import React, { Component, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import Cookies from 'js-cookie';
 export default function SignUp() {
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -41,10 +41,8 @@ export default function SignUp() {
       .then((data) => {
         setUser(data.user);
         navigate('/');
-
+        console.log('right after signup: ' + data.token);
         Cookies.set('token', data.token);
-
-        console.log(Cookies.get('token'));
       });
   };
 

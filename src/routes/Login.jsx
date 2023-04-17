@@ -51,8 +51,6 @@ export default function Login() {
         setUser(data.user);
         navigate('/');
         Cookies.set('token', data.token);
-
-        console.log(Cookies.get('token'));
       });
   }
 

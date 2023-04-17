@@ -6,6 +6,7 @@ import { navLinks } from '../constants';
 import { logo, menu, close } from '../assets';
 
 import { AuthContext } from '../context/AuthContext';
+import Cookies from 'js-cookie';
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
@@ -13,6 +14,11 @@ const Navbar = () => {
   const [active, setActive] = useState('');
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const handleLogout = () => {
+    Cookies.remove('token');
+    window.location.reload();
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,6 +83,8 @@ const Navbar = () => {
                 <></>
               ) : !user && nav.id === 'sign-out' ? (
                 <></>
+              ) : user && nav.id === 'sign-out' ? (
+                <div onClick={() => handleLogout()}>{nav.title}</div>
               ) : (
                 <a href={`${nav.id}`}>{nav.title}</a>
               )}

@@ -27,14 +27,12 @@ const App = () => {
     })
       .then((res) => {
         if (res.status === 200) {
-          console.log('200');
           return res.json();
         } else {
           return;
         }
       })
       .then((data) => {
-        console.log(data);
         setUser(data.user);
       })
       .catch((error) => console.error(error));
