@@ -25,14 +25,18 @@ const App = () => {
         'my-jwt': token, // Add this line
       },
     })
-      .then((response) => {
+      .then((res) => {
         if (res.status === 200) {
-          response.json();
+          console.log('200');
+          return res.json();
         } else {
           return;
         }
       })
-      .then((data) => setUser(data.user))
+      .then((data) => {
+        console.log(data);
+        setUser(data.user);
+      })
       .catch((error) => console.error(error));
   }, []);
 
