@@ -23,7 +23,7 @@ const Mansion = ({ isMobile }) => {
         object={apartment.scene}
         scale={0.25}
         position={[0, -2.7, -1.5]}
-        rotation={[0.05,-3.5,0.05]}
+        rotation={[0,-3.5,0]}
       />
     </mesh>
   );
@@ -63,7 +63,7 @@ const MansionCanvas = () => {
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
-          enableZoom={false}
+          enableZoom={true}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />

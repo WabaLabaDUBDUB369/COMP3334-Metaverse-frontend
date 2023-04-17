@@ -10,7 +10,7 @@ const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const email = window.localStorage.getItem('email');
+  const username = window.localStorage.getItem('username');
   const isLoggedIn = window.localStorage.getItem('loggedIn');
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const Navbar = () => {
               } hover:text-white text-[18px] font-medium cursor-pointer`}
               onClick={() => setActive(nav.title)}
             >
-              {email && nav.id == 'signed-in' ? (
+              {username && nav.id == 'signed-in' ? (
                 <Link
                   to="/userDetails"
                   className="flex items-center gap-2 hover:bg-sky-700 rounded px-3"
@@ -67,7 +67,7 @@ const Navbar = () => {
                 >
                   <p className="text-white text-[18px] font-bold cursor-pointer flex">
                     Welcome &nbsp;
-                    <span className="sm:block hidden"> | {email}</span>
+                    <span className="sm:block hidden"> | {username}</span>
                   </p>
                 </Link>
               ) : (

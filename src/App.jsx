@@ -5,6 +5,7 @@ import Login from './routes/Login';
 import SignUp from './routes/Signup';
 import UserDetails from './routes/userDetails';
 import AboutUs from './routes/AboutUs';
+import Users from './routes/Users';
 
 import GeneralLayout from './layouts/GeneralLayout';
 
@@ -18,6 +19,7 @@ const App = () => {
               <Route exact path="/" element={<Hero />} />
               <Route path="/sign-in" element={<Login />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/users" element={<Users />} />
               <Route path="/aboutus" element={<AboutUs />} />
               <Route path="/userDetails" element={<UserDetails />} />
             </Routes>

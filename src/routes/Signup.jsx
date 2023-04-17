@@ -3,14 +3,14 @@ import React, { Component, useState } from "react";
 export default function SignUp() {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [secretKey, setSecretKey] = useState("");
 
   const handleSubmit = (e) => {
       e.preventDefault();
 
-      console.log(fname, lname, email, password);
+      console.log(fname, lname, username, password);
       fetch("http://localhost:5000/register", {
         method: "POST",
         crossDomain: true,
@@ -22,7 +22,7 @@ export default function SignUp() {
         body: JSON.stringify({
           fname : fname,
           lname : lname,
-          email : email,
+          username : username,
           password : password,
         }),
       })
@@ -32,7 +32,7 @@ export default function SignUp() {
           if (data.status == "ok") {
             alert("Registration Successful");
             window.localStorage.setItem("loggedIn", true);
-            window.localStorage.setItem("email", email);
+            window.localStorage.setItem("username", username);
             window.location.href = "/";
           } else {
             alert("Something went wrong");
@@ -59,8 +59,8 @@ export default function SignUp() {
                         <input onChange={(e) => setLname(e.target.value)} type="text" name="lname" id="lname" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Last name" required=""/>
                     </div>
                     <div>
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email Address</label>
-                        <input onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required=""/>
+                        <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                        <input onChange={(e) => setUsername(e.target.value)} type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
                     </div>
                     <div>
                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>

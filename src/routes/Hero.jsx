@@ -577,7 +577,7 @@ const Hero = () => {
         <div>
           <div>
             <p className={styles.sectionSubText}>Building Description</p>
-            <h2 className={styles.sectionHeadText}>Highcliff Manor</h2>
+            <h2 className={styles.sectionHeadText}>Homestead Villa</h2>
           </div>
           <p className="mt-4 mb-10 text-secondary text-[17px] max-w-3xl leading-[30px]">
             Indulge in the epitome of luxury living with this breathtaking
