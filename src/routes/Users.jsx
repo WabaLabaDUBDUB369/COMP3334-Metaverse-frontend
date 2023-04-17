@@ -1,19 +1,17 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from 'react';
 
 export default function Users() {
     const [userData, setUserData] = useState([]);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/allUsers ',
-            {
-            method: "GET",
-            }
-        ).then((response) => response.json())
-        .then((data) => {
-            console.log(data, 'userData');
-            setUserData(data.data);
-        });
-    }, []);
+  useEffect(() => {
+    fetch('http://localhost:5000/allUsers ', {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUserData(data.data);
+      });
+  }, []);
 
     return (
         <div class="mt-20 2xl:container 2xl:mx-auto lg:py-16 lg:px-20 md:py-12 md:px-6 py-9 px-4">
