@@ -4,8 +4,8 @@
 
 export const navLinks = [
   {
-    id: 'signed-in',
-    title: 'Signed In',
+    id: 'my-profile',
+    title: 'My Profile',
   },
   {
     id: 'sign-in',
