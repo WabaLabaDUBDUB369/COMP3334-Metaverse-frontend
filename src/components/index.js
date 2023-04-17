@@ -1,10 +1,5 @@
-import Hero from "./Hero";
-import Navbar from "./Navbar";
-import CanvasLoader from "./Loader";
+import Hero from '../routes/Hero';
+import Navbar from './Navbar';
+import CanvasLoader from './Loader';
 
-
-export {
-  Hero,
-  Navbar,
-  CanvasLoader,
-};
+export { Hero, Navbar, CanvasLoader };

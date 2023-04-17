@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Hero, Navbar } from './components';
 
+import Hero from './routes/Hero';
 import Login from './routes/Login';
 import SignUp from './routes/Signup';
 import UserDetails from './routes/userDetails';
