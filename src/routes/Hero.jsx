@@ -28,7 +28,6 @@ const Hero = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data, 'userData');
         setUserData(data.data);
 
         if (data.data == 'token expired') {
@@ -55,7 +54,6 @@ const Hero = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data, 'userRegister');
         if (data.status == 'ok') {
           alert('Property Rented Successfully');
           window.location.href = '/';
@@ -79,7 +77,6 @@ const Hero = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data, 'userRegister');
         if (data.status == 'ok') {
           alert('Property Bought Successfully');
           window.location.href = '/';
@@ -104,7 +101,6 @@ const Hero = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data, 'userRegister');
         if (data.status == 'ok') {
           alert('Property Sold Successfully');
           window.location.href = '/';
