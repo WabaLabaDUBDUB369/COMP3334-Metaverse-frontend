@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { styles } from '../styles/styles';
 import { navLinks } from '../constants';
 import { logo, menu, close } from '../assets';
 
+import { AuthContext } from '../context/AuthContext';
+
 const Navbar = () => {
+  const { user } = useContext(AuthContext);
+
   const [active, setActive] = useState('');
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  const username = window.localStorage.getItem('username');
-  const isLoggedIn = window.localStorage.getItem('loggedIn');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,20 +57,25 @@ const Navbar = () => {
               } hover:text-white text-[18px] font-medium cursor-pointer`}
               onClick={() => setActive(nav.title)}
             >
-              {username && nav.id == 'signed-in' ? (
+              {user && nav.id === 'signed-in' ? (
                 <Link
                   to="/userDetails"
-                  className="flex items-center gap-2 hover:bg-sky-700 rounded px-3"
+                  className=""
                   onClick={() => {
                     setActive('');
                     window.scrollTo(0, 0);
                   }}
                 >
-                  <p className="text-white text-[18px] font-bold cursor-pointer flex">
+                  <>tEst</>
+                  {/* <p className="text-white text-[18px] font-bold cursor-pointer flex">
                     Welcome &nbsp;
                     <span className="sm:block hidden"> | {username}</span>
-                  </p>
+                  </p> */}
                 </Link>
+              ) : user && nav.id === 'sign-in' ? (
+                <></>
+              ) : !user && nav.id === 'sign-out' ? (
+                <></>
               ) : (
                 <a href={`${nav.id}`}>{nav.title}</a>
               )}

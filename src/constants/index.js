@@ -1,27 +1,28 @@
 // import {
-  
+
 // } from "../assets";
-const isLoggedIn = window.localStorage.getItem("loggedIn");
 
-export const navLinks = 
-  [isLoggedIn == "true" ?
+export const navLinks = [
   {
-    id: "signed-in",
-    title: "Signed In",
-  } :
-  {
-    id: "sign-in",
-    title: "Sign In",
+    id: 'signed-in',
+    title: 'Signed In',
   },
   {
-    id: "users",
-    title: "All Users"
+    id: 'sign-in',
+    title: 'Sign In',
   },
   {
-    id: "aboutus",
-    title: "About Us",
-  }
-  ]
-
+    id: 'sign-out',
+    title: 'Sign Out',
+  },
+  {
+    id: 'users',
+    title: 'All Users',
+  },
+  {
+    id: 'aboutus',
+    title: 'About Us',
+  },
+];
 
 export {};

@@ -8,25 +8,28 @@ import AboutUs from './routes/AboutUs';
 import Users from './routes/Users';
 
 import GeneralLayout from './layouts/GeneralLayout';
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <div className="relative z-0 bg-primary">
-        <div className="bg-hero-pattern bg-cover bg-repeat">
-          <GeneralLayout>
-            <Routes>
-              <Route exact path="/" element={<Hero />} />
-              <Route path="/sign-in" element={<Login />} />
-              <Route path="/sign-up" element={<SignUp />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/aboutus" element={<AboutUs />} />
-              <Route path="/userDetails" element={<UserDetails />} />
-            </Routes>
-          </GeneralLayout>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="relative z-0 bg-primary">
+          <div className="bg-hero-pattern bg-cover bg-repeat">
+            <GeneralLayout>
+              <Routes>
+                <Route exact path="/" element={<Hero />} />
+                <Route path="/sign-in" element={<Login />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/aboutus" element={<AboutUs />} />
+                <Route path="/userDetails" element={<UserDetails />} />
+              </Routes>
+            </GeneralLayout>
+          </div>
         </div>
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 
