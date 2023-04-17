@@ -13,7 +13,7 @@ export default function UserDetails() {
       .then((data) => {
         setUserData(data.data);
       });
-  }, []);
+    }, []);
 
   return <UserHome userData={userData} />;
 }

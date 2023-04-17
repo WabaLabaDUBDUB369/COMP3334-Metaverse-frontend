@@ -10,36 +10,46 @@ import { LuxuryHouseCanvas } from '../components/canvas';
 import { MansionCanvas } from '../components/canvas';
 
 const Hero = () => {
-  const [userData, setUserData] = useState('');
+  const [userData, setUserData] = useState({});
   const isLoggedIn = window.localStorage.getItem('loggedIn');
+  const [allUsers, setAllUsers] = useState({});
+
+  const [propertyRent, setPropertyRent] = useState(false);
+  const [propertyBuy, setPropertyBuy] = useState(false);
+  const [propertySell, setPropertySell] = useState(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    // fetch('http://localhost:5000/userData', {
-    //   method: 'POST',
-    //   crossDomain: true,
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Accept: 'application/json',
-    //     'Access-Control-Allow-Origin': '*',
-    //   },
-    //   body: JSON.stringify({
-    //     token: window.localStorage.getItem('token'),
-    //   }),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setUserData(data.data);
-    //     if (data.data == 'token expired') {
-    //       alert('Token expired login again');
-    //       window.localStorage.clear();
-    //       window.location.href = './sign-in';
-    //     }
-    //   });
+
+      fetch('http://localhost:5000/allUsers ',
+          {
+          method: "GET",
+          }
+      ).then((response) => response.json())
+      .then((data) => {
+          console.log(data, 'userData');
+          setAllUsers(data.data);
+      });
+  }, []);
+
+  useEffect(() => {
+    if(isLoggedIn){
+      fetch('http://localhost:3000/my-assets',
+      {
+        method: "GET",
+      }
+    ).then((response) => response.json())
+    .then((data) => {
+      console.log(data, 'userData');
+      setUserData(data.data);
+    });
+    }
   }, [isLoggedIn, userData]);
 
-  const handleRent = (property) => {
+  const handleRent = (realEstateType, realEstatePrice) => {
     var myObj = new Object();
-    myObj[property] = 1;
+    myObj[realEstateType] = realEstateType;
+    myObj[realEstatePrice] = realEstatePrice;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -58,11 +68,15 @@ const Hero = () => {
           window.location.href = '/';
         }
       });
+      setPropertyRent(false);
+      setUserName("");
+      setUserData("");
   };
 
-  const handleBuy = (property) => {
+  const handleBuy = (realEstateType, realEstatePrice) => {
     var myObj = new Object();
-    myObj[property] = 1;
+    myObj[realEstateType] = realEstateType;
+    myObj[realEstatePrice] = realEstatePrice;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -81,12 +95,16 @@ const Hero = () => {
           window.location.href = '/';
         }
       });
+
+    setPropertyBuy(false);
+    setUserName("");
+    setUserData("");
   };
 
-  const handleSell = (propertyOwned, propertyRented) => {
+  const handleSell = (realEstateType, realEstatePrice) => {
     var myObj = new Object();
-    myObj[propertyOwned] = 0;
-    myObj[propertyRented] = 0;
+    myObj[realEstateType] = realEstateType;
+    myObj[realEstatePrice] = realEstatePrice;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -105,6 +123,9 @@ const Hero = () => {
           window.location.href = '/';
         }
       });
+      setPropertySell(false);
+      setUserName("");
+      setUserData("");
   };
 
   return (
@@ -166,19 +187,17 @@ const Hero = () => {
             skyline!
           </p>
           {userData && isLoggedIn ? (
-            userData.propertyOwned1 == '1' ? (
+            userData.realEstateOwned.filter((item) => item.realEstateType == 'riverwalk') ? (
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleRent('propertyRented1');
-                      setUserData('');
+                      setPropertyRent(true);
+                      setPropertySell(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
-                    {userData.propertyRented1 == '1'
-                      ? 'Property being rented'
-                      : 'Rent Property'}
+                    Rent Property
                     <img
                       src="src/assets/hand-over.png"
                       alt="web-development"
@@ -189,8 +208,8 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleSell('propertyOwned1', 'propertyRented1');
-                      setUserData('');
+                      setPropertySell(true);
+                      setPropertyRent(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -208,8 +227,7 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleBuy('propertyOwned1');
-                      setUserData('');
+                      setPropertyBuy(true);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -258,6 +276,20 @@ const Hero = () => {
             </div>
           )}
         </div>
+        {
+          propertyBuy || propertyBuy || propertySell ? 
+          <div>
+            <form>
+              <div class="mt-10">
+                  <label for="rent" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{propertyBuy ? 'Enter the username of the person to whom you want to buy from' : propertySell ? 'Enter the username of the person to whom you want to sell' : 'Enter the username of the person to whom you want to rent'}</label>
+                  <div class="flex">
+                    <input onChange={(e) => setUserName(e.target.value)} type="text" id="username" class="w-60 mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required/>
+                    <button onClick={() => { propertyBuy ? handleBuy('riverwalk', 1000) : propertySell ? handleSell('riverwalk', 1000) : handleRent('riverwalk', 1000)}} class="w-50 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-sky-500 hover:bg-sky-700 rounded px-3">{propertyBuy ? 'Buy' : propertySell ? 'Sell' : 'Rent'}</button>
+                  </div>
+              </div>
+            </form>
+          </div> : null
+        }
       </div>
       {/* DIVIDER */}
 
@@ -306,19 +338,17 @@ const Hero = () => {
             to own a stunning duplex apartment in a sought-after neighborhood!
           </p>
           {userData && isLoggedIn ? (
-            userData.propertyOwned2 == '1' ? (
+            userData.realEstateOwned.filter((item) => item.realEstateType == 'summit') ? (
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleRent('propertyRented2');
-                      setUserData('');
+                      setPropertyRent(true);
+                      setPropertySell(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
-                    {userData.propertyRented2 == '1'
-                      ? 'Property being rented'
-                      : 'Rent Property'}
+                    Rent Property
                     <img
                       src="src/assets/hand-over.png"
                       alt="web-development"
@@ -329,8 +359,8 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleSell('propertyOwned2', 'propertyRented2');
-                      setUserData('');
+                      setPropertySell(true);
+                      setPropertyRent(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -348,8 +378,7 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleBuy('propertyOwned2');
-                      setUserData('');
+                      setPropertyBuy(true);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -398,6 +427,20 @@ const Hero = () => {
             </div>
           )}
         </div>
+        {
+          propertyBuy || propertyBuy || propertySell ? 
+          <div>
+            <form>
+              <div class="mt-10">
+                  <label for="rent" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{propertyBuy ? 'Enter the username of the person to whom you want to buy from' : propertySell ? 'Enter the username of the person to whom you want to sell' : 'Enter the username of the person to whom you want to rent'}</label>
+                  <div class="flex">
+                    <input onChange={(e) => setUserName(e.target.value)} type="text" id="username" class="w-60 mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required/>
+                    <button onClick={() => { propertyBuy ? handleBuy('summit', 500) : propertySell ? handleSell('summit', 500) : handleRent('summit', 500)}} class="w-50 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-sky-500 hover:bg-sky-700 rounded px-3">{propertyBuy ? 'Buy' : propertySell ? 'Sell' : 'Rent'}</button>
+                  </div>
+              </div>
+            </form>
+          </div> : null
+        }
       </div>
 
       {/* DIVIDER */}
@@ -449,19 +492,17 @@ const Hero = () => {
             forever home!
           </p>
           {userData && isLoggedIn ? (
-            userData.propertyOwned3 == '1' ? (
+            userData.realEstateOwned.filter((item) => item.realEstateType == 'sunflower') ? (
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleRent('propertyRented3');
-                      setUserData('');
+                      setPropertyRent(true);
+                      setPropertySell(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
-                    {userData.propertyRented3 == '1'
-                      ? 'Property being rented'
-                      : 'Rent Property'}
+                    Rent Property
                     <img
                       src="src/assets/hand-over.png"
                       alt="web-development"
@@ -472,8 +513,8 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleSell('propertyOwned3', 'propertyRented3');
-                      setUserData('');
+                      setPropertySell(true);
+                      setPropertyRent(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -491,8 +532,7 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleBuy('propertyOwned3');
-                      setUserData('');
+                      setPropertyBuy(true);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -541,6 +581,20 @@ const Hero = () => {
             </div>
           )}
         </div>
+        {
+          propertyBuy || propertyBuy || propertySell ? 
+          <div>
+            <form>
+              <div class="mt-10">
+                  <label for="rent" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{propertyBuy ? 'Enter the username of the person to whom you want to buy from' : propertySell ? 'Enter the username of the person to whom you want to sell' : 'Enter the username of the person to whom you want to rent'}</label>
+                  <div class="flex">
+                    <input onChange={(e) => setUserName(e.target.value)} type="text" id="username" class="w-60 mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required/>
+                    <button onClick={() => { propertyBuy ? handleBuy('sunflower', 750) : propertySell ? handleSell('sunflower', 750) : handleRent('sunflower', 750)}} class="w-50 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-sky-500 hover:bg-sky-700 rounded px-3">{propertyBuy ? 'Buy' : propertySell ? 'Sell' : 'Rent'}</button>
+                  </div>
+              </div>
+            </form>
+          </div> : null
+        }
       </div>
 
       {/* DIVIDER */}
@@ -590,19 +644,17 @@ const Hero = () => {
             to own a truly exceptional and luxurious home!
           </p>
           {userData && isLoggedIn ? (
-            userData.propertyOwned4 == '1' ? (
+            userData.realEstateOwned.filter((item) => item.realEstateType == 'highcliff') ? (
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleRent('propertyRented4');
-                      setUserData('');
+                      setPropertyRent(true);
+                      setPropertySell(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
-                    {userData.propertyRented4 == '1'
-                      ? 'Property being rented'
-                      : 'Rent Property'}
+                    Rent Property
                     <img
                       src="src/assets/hand-over.png"
                       alt="web-development"
@@ -613,8 +665,8 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleSell('propertyOwned4', 'propertyRented4');
-                      setUserData('');
+                      setPropertySell(true);
+                      setPropertyRent(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -632,8 +684,7 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleBuy('propertyOwned4');
-                      setUserData('');
+                      setPropertyBuy(true);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -682,6 +733,20 @@ const Hero = () => {
             </div>
           )}
         </div>
+        {
+          propertyBuy || propertyBuy || propertySell ? 
+          <div>
+            <form>
+              <div class="mt-10">
+                  <label for="rent" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{propertyBuy ? 'Enter the username of the person to whom you want to buy from' : propertySell ? 'Enter the username of the person to whom you want to sell' : 'Enter the username of the person to whom you want to rent'}</label>
+                  <div class="flex">
+                    <input onChange={(e) => setUserName(e.target.value)} type="text" id="username" class="w-60 mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required/>
+                    <button onClick={() => { propertyBuy ? handleBuy('highcliff', 900) : propertySell ? handleSell('highcliff', 900) : handleRent('highcliff', 900)}} class="w-50 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-sky-500 hover:bg-sky-700 rounded px-3">{propertyBuy ? 'Buy' : propertySell ? 'Sell' : 'Rent'}</button>
+                  </div>
+              </div>
+            </form>
+          </div> : null
+        }
       </div>
 
       {/* DIVIDER */}
@@ -731,19 +796,17 @@ const Hero = () => {
             exudes sophistication and grandeur!
           </p>
           {userData && isLoggedIn ? (
-            userData.propertyOwned5 == '1' ? (
+            userData.realEstateOwned.filter((item) => item.realEstateType == 'homestead') ? (
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleRent('propertyRented5');
-                      setUserData('');
+                      setPropertyRent(true);
+                      setPropertySell(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
-                    {userData.propertyRented5 == '1'
-                      ? 'Property being rented'
-                      : 'Rent Property'}
+                    Rent Property
                     <img
                       src="src/assets/hand-over.png"
                       alt="web-development"
@@ -754,8 +817,8 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleSell('propertyOwned5', 'propertyRented5');
-                      setUserData('');
+                      setPropertySell(true);
+                      setPropertyRent(false);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -773,8 +836,7 @@ const Hero = () => {
                 <Tilt className="xs:w-[250px] w-full">
                   <button
                     onClick={() => {
-                      handleBuy('propertyOwned5');
-                      setUserData('');
+                      setPropertyBuy(true);
                     }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
@@ -823,6 +885,20 @@ const Hero = () => {
             </div>
           )}
         </div>
+        {
+          propertyBuy || propertyBuy || propertySell ? 
+          <div>
+            <form>
+              <div class="mt-10">
+                  <label for="rent" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">{propertyBuy ? 'Enter the username of the person to whom you want to buy from' : propertySell ? 'Enter the username of the person to whom you want to sell' : 'Enter the username of the person to whom you want to rent'}</label>
+                  <div class="flex">
+                    <input onChange={(e) => setUserName(e.target.value)} type="text" id="username" class="w-60 mr-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required/>
+                    <button onClick={() => { propertyBuy ? handleBuy('homestead', 1200) : propertySell ? handleSell('homestead', 1200) : handleRent('homestead', 1200)}} class="w-50 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-sky-500 hover:bg-sky-700 rounded px-3">{propertyBuy ? 'Buy' : propertySell ? 'Sell' : 'Rent'}</button>
+                  </div>
+              </div>
+            </form>
+          </div> : null
+        }
       </div>
     </section>
   );
