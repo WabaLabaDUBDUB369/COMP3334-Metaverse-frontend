@@ -1,5 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function Login() {
   const { setUser } = useContext(AuthContext);
@@ -7,28 +9,50 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleSubmit(e) {
+  const navigate = useNavigate();
+
+  function getCookieValue(cookieName) {
+    const cookieString = document.cookie;
+    const cookieList = cookieString.split('; ');
+
+    for (const cookie of cookieList) {
+      const [name, value] = cookie.split('=');
+      if (name === cookieName) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    fetch(import.meta.env.VITE_BACKEND_URL + '/api/auth/login', {
+    await fetch(import.meta.env.VITE_BACKEND_URL + '/api/auth/login', {
       method: 'POST',
-      crossDomain: true,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
       body: JSON.stringify({
         username: username,
         password: password,
       }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
       .then((res) => {
+        if (res.status === 200) {
+          alert('successfully logged in');
+        } else {
+          alert('Wrong credentials');
+          return;
+        }
         return res.json();
       })
       .then((data) => {
         setUser(data.user);
-        alert(data.message);
+        navigate('/');
+        Cookies.set('token', data.token);
+
+        console.log(Cookies.get('token'));
       });
   }
 

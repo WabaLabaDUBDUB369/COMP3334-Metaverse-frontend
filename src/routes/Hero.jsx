@@ -14,28 +14,27 @@ const Hero = () => {
   const isLoggedIn = window.localStorage.getItem('loggedIn');
 
   useEffect(() => {
-    fetch('http://localhost:5000/userData', {
-      method: 'POST',
-      crossDomain: true,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify({
-        token: window.localStorage.getItem('token'),
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUserData(data.data);
-
-        if (data.data == 'token expired') {
-          alert('Token expired login again');
-          window.localStorage.clear();
-          window.location.href = './sign-in';
-        }
-      });
+    // fetch('http://localhost:5000/userData', {
+    //   method: 'POST',
+    //   crossDomain: true,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Accept: 'application/json',
+    //     'Access-Control-Allow-Origin': '*',
+    //   },
+    //   body: JSON.stringify({
+    //     token: window.localStorage.getItem('token'),
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setUserData(data.data);
+    //     if (data.data == 'token expired') {
+    //       alert('Token expired login again');
+    //       window.localStorage.clear();
+    //       window.location.href = './sign-in';
+    //     }
+    //   });
   }, [isLoggedIn, userData]);
 
   const handleRent = (property) => {

@@ -1,6 +1,11 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
+  const { setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
   const [username, setUsername] = useState('');
@@ -26,10 +31,20 @@ export default function SignUp() {
       }),
     })
       .then((res) => {
+        if (res.status === 201) {
+          alert('Successfully registered');
+        } else {
+          return;
+        }
         return res.json();
       })
       .then((data) => {
-        alert(data.message);
+        setUser(data.user);
+        navigate('/');
+
+        Cookies.set('token', data.token);
+
+        console.log(Cookies.get('token'));
       });
   };
 
