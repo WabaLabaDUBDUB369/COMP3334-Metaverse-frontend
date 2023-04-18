@@ -12,10 +12,6 @@ export const navLinks = [
     title: 'Sign In',
   },
   {
-    id: 'sign-out',
-    title: 'Sign Out',
-  },
-  {
     id: 'users',
     title: 'All Users',
   },
@@ -23,6 +19,10 @@ export const navLinks = [
     id: 'aboutus',
     title: 'About Us',
   },
+  {
+    id: 'sign-out',
+    title: 'Sign Out',
+  }
 ];
 
 export {};

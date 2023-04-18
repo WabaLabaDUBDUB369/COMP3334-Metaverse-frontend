@@ -4,7 +4,7 @@ export default function Users() {
   const [userData, setUserData] = useState([]);
 
   const getUserData = async () => {
-    fetch(import.meta.env.VITE_BACKEND_URL + '/api/users/all-users ', {
+    fetch(import.meta.env.VITE_BACKEND_URL + '/api/users/all-users', {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -18,18 +18,9 @@ export default function Users() {
     console.log('call userData');
     console.log(userData);
   }, [userData]);
-  //   useEffect(() => {
-  //     fetch('http://localhost:5000/allUsers ', {
-  //       method: 'GET',
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setUserData(data.data);
-  //       });
-  //   }, []);
 
   return (
-    <div class="mt-20 2xl:container 2xl:mx-auto lg:py-16 lg:px-20 md:py-12 md:px-6 py-9 px-4">
+    <div class="h-screen 2xl:container 2xl:mx-auto lg:py-16 lg:px-20 md:py-12 md:px-6 py-9 px-4">
       <div class="p-4 bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <div class="flex flex-col content-center items-center">
           <h3 class="text-3xl font-bold leading-none text-gray-900 dark:text-white">

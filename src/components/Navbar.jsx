@@ -80,7 +80,7 @@ const Navbar = () => {
               ) : !user && nav.id === 'my-profile' ? (
                 <></>
               ) : user && nav.id === 'sign-in' ? (
-                <></>
+                <></> 
               ) : !user && nav.id === 'sign-out' ? (
                 <></>
               ) : user && nav.id === 'sign-out' ? (

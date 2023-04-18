@@ -12,8 +12,7 @@ import { MansionCanvas } from '../components/canvas';
 import { AuthContext } from '../context/AuthContext';
 
 const Hero = () => {
-  const { user } = useContext(AuthContext);
-  const [userData, setUserData] = useState({});
+  const { user, setUser } = useContext(AuthContext);
   const isLoggedIn = window.localStorage.getItem('loggedIn');
   const [allUsers, setAllUsers] = useState({});
 
@@ -22,36 +21,18 @@ const Hero = () => {
   const [propertySell, setPropertySell] = useState(false);
   const [userName, setUserName] = useState('');
 
-  const [realEstateType, setRealEstateType] = useState('');
-  const [realEstatePrice, setRealEstatePrice] = useState('');
+  // const [realEstateType, setRealEstateType] = useState('');
+  // const [realEstatePrice, setRealEstatePrice] = useState('');
 
-  const [realEstateRent, setRealEstateRent] = useState('');
+  // const [realEstateRent, setRealEstateRent] = useState('');
 
-  // useEffect(() => {
-  //   fetch('http://localhost:5000/allUsers ', {
-  //     method: 'GET',
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setAllUsers(data.data);
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     fetch('http://localhost:3000/my-assets', {
-  //       method: 'GET',
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setUserData(data.data);
-  //       });
-  //   }
-  // }, [isLoggedIn, userData]);
 
   useEffect(() => {
-    setUserData(user);
-  }, [user]);
+
+    /**** Need to reload the current user data after a successful buy, sell or rent. Don't know which API endpoint to use ***/
+    /**  there should be a state variable in the dependency array as well to monitor a buy, sell or rent action ***/
+
+  }, [ ]);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -68,10 +49,41 @@ const Hero = () => {
     getUserData();
   }, []);
 
+  // const transaction = () => {
+  //   var myObj = new Object();
+  //   myObj[realEstateType] = realEstateType;
+  //   myObj[realEstatePrice] = realEstatePrice;
+  //   myObj[buyer] = buyer;
+  //   myObj[seller] = seller;
+
+  //   fetch('http://localhost:5000/login-user', {
+  //     method: 'PUT',
+  //     crossDomain: true,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       Accept: 'application/json',
+  //       'Access-Control-Allow-Origin': '*',
+  //     },
+  //     body: JSON.stringify(myObj),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.status == 'ok') {
+  //         alert('Property Bought Successfully');
+  //         window.location.href = '/';
+  //       }
+  //     });
+
+  //   setPropertyBuy(false);
+  //   setUserName('');
+  // };
+
   const handleRent = (realEstateType, realEstatePrice) => {
     var myObj = new Object();
     myObj[realEstateType] = realEstateType;
     myObj[realEstatePrice] = realEstatePrice;
+    myObj[rentingFrom] = userName;
+    myObj[rentedBy] = user.username;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -92,44 +104,14 @@ const Hero = () => {
       });
     setPropertyRent(false);
     setUserName('');
-    setUserData('');
   };
 
-  const transaction = () => {
-    var myObj = new Object();
-    myObj[realEstateType] = realEstateType;
-    myObj[realEstatePrice] = realEstatePrice;
-    myObj[buyer] = buyer;
-    myObj[seller] = seller;
-
-    fetch('http://localhost:5000/login-user', {
-      method: 'PUT',
-      crossDomain: true,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify(myObj),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status == 'ok') {
-          alert('Property Bought Successfully');
-          window.location.href = '/';
-        }
-      });
-
-    setPropertyBuy(false);
-    setUserName('');
-    setUserData('');
-  };
   const handleBuy = (realEstateType, realEstatePrice, buyer, seller) => {
     var myObj = new Object();
     myObj[realEstateType] = realEstateType;
     myObj[realEstatePrice] = realEstatePrice;
-    myObj[buyer] = buyer;
-    myObj[seller] = seller;
+    myObj[buyer] = user.username;
+    myObj[seller] = userName;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -151,13 +133,14 @@ const Hero = () => {
 
     setPropertyBuy(false);
     setUserName('');
-    setUserData('');
   };
 
   const handleSell = (realEstateType, realEstatePrice) => {
     var myObj = new Object();
     myObj[realEstateType] = realEstateType;
     myObj[realEstatePrice] = realEstatePrice;
+    myObj[buyer] = userName;
+    myObj[seller] = user.username;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -178,7 +161,6 @@ const Hero = () => {
       });
     setPropertySell(false);
     setUserName('');
-    setUserData('');
   };
 
   return (
@@ -246,10 +228,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyRent(true);
-                      setPropertySell(false);
-                    }}
+                    onClick={() => { propertyRent ? setPropertyRent(false) : setPropertyRent(true); setPropertySell(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Rent Property
@@ -262,10 +241,7 @@ const Hero = () => {
                 </Tilt>
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertySell(true);
-                      setPropertyRent(false);
-                    }}
+                    onClick={() => { propertySell ? setPropertySell(false) : setPropertySell(true); setPropertyRent(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Sell Property
@@ -281,9 +257,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyBuy(true);
-                    }}
+                    onClick={() => { propertyBuy ? setPropertyBuy(false) : setPropertyBuy(true); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Buy Property
@@ -299,7 +273,7 @@ const Hero = () => {
           ) : (
             <div className="mt-3 flex flex-wrap gap-10">
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Rent Property
                   <img
                     src="src/assets/hand-over.png"
@@ -309,7 +283,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Buy Property
                   <img
                     src="src/assets/shopping-cart.png"
@@ -319,7 +293,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Sell Property
                   <img
                     src="src/assets/payment-method.png"
@@ -425,10 +399,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyRent(true);
-                      setPropertySell(false);
-                    }}
+                    onClick={() => { propertyRent ? setPropertyRent(false) : setPropertyRent(true); setPropertySell(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Rent Property
@@ -441,10 +412,7 @@ const Hero = () => {
                 </Tilt>
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertySell(true);
-                      setPropertyRent(false);
-                    }}
+                    onClick={() => { propertySell ? setPropertySell(false) : setPropertySell(true); setPropertyRent(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Sell Property
@@ -460,9 +428,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyBuy(true);
-                    }}
+                    onClick={() => { propertyBuy ? setPropertyBuy(false) : setPropertyBuy(true); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Buy Property
@@ -478,7 +444,7 @@ const Hero = () => {
           ) : (
             <div className="mt-3 flex flex-wrap gap-10">
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Rent Property
                   <img
                     src="src/assets/hand-over.png"
@@ -488,7 +454,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Buy Property
                   <img
                     src="src/assets/shopping-cart.png"
@@ -498,7 +464,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Sell Property
                   <img
                     src="src/assets/payment-method.png"
@@ -607,10 +573,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyRent(true);
-                      setPropertySell(false);
-                    }}
+                    onClick={() => { propertyRent ? setPropertyRent(false) : setPropertyRent(true); setPropertySell(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Rent Property
@@ -623,10 +586,7 @@ const Hero = () => {
                 </Tilt>
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertySell(true);
-                      setPropertyRent(false);
-                    }}
+                    onClick={() => { propertySell ? setPropertySell(false) : setPropertySell(true); setPropertyRent(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Sell Property
@@ -642,9 +602,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyBuy(true);
-                    }}
+                    onClick={() => { propertyBuy ? setPropertyBuy(false) : setPropertyBuy(true); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Buy Property
@@ -660,7 +618,7 @@ const Hero = () => {
           ) : (
             <div className="mt-3 flex flex-wrap gap-10">
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Rent Property
                   <img
                     src="src/assets/hand-over.png"
@@ -670,7 +628,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Buy Property
                   <img
                     src="src/assets/shopping-cart.png"
@@ -680,7 +638,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Sell Property
                   <img
                     src="src/assets/payment-method.png"
@@ -787,10 +745,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyRent(true);
-                      setPropertySell(false);
-                    }}
+                    onClick={() => { propertyRent ? setPropertyRent(false) : setPropertyRent(true); setPropertySell(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Rent Property
@@ -803,10 +758,7 @@ const Hero = () => {
                 </Tilt>
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertySell(true);
-                      setPropertyRent(false);
-                    }}
+                    onClick={() => { propertySell ? setPropertySell(false) : setPropertySell(true); setPropertyRent(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Sell Property
@@ -822,9 +774,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyBuy(true);
-                    }}
+                    onClick={() => { propertyBuy ? setPropertyBuy(false) : setPropertyBuy(true); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Buy Property
@@ -840,7 +790,7 @@ const Hero = () => {
           ) : (
             <div className="mt-3 flex flex-wrap gap-10">
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Rent Property
                   <img
                     src="src/assets/hand-over.png"
@@ -850,7 +800,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Buy Property
                   <img
                     src="src/assets/shopping-cart.png"
@@ -860,7 +810,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Sell Property
                   <img
                     src="src/assets/payment-method.png"
@@ -967,10 +917,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyRent(true);
-                      setPropertySell(false);
-                    }}
+                    onClick={() => { propertyRent ? setPropertyRent(false) : setPropertyRent(true); setPropertySell(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Rent Property
@@ -983,10 +930,7 @@ const Hero = () => {
                 </Tilt>
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertySell(true);
-                      setPropertyRent(false);
-                    }}
+                    onClick={() => { propertySell ? setPropertySell(false) : setPropertySell(true); setPropertyRent(false); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Sell Property
@@ -1002,9 +946,7 @@ const Hero = () => {
               <div className="mt-3 flex flex-wrap gap-10">
                 <Tilt className="xs:w-[250px] w-full">
                   <button
-                    onClick={() => {
-                      setPropertyBuy(true);
-                    }}
+                    onClick={() => { propertyBuy ? setPropertyBuy(false) : setPropertyBuy(true); }}
                     className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card"
                   >
                     Buy Property
@@ -1020,7 +962,7 @@ const Hero = () => {
           ) : (
             <div className="mt-3 flex flex-wrap gap-10">
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Rent Property
                   <img
                     src="src/assets/hand-over.png"
@@ -1030,7 +972,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Buy Property
                   <img
                     src="src/assets/shopping-cart.png"
@@ -1040,7 +982,7 @@ const Hero = () => {
                 </button>
               </Tilt>
               <Tilt className="xs:w-[250px] w-full">
-                <button className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
+                <button onClick={() => { alert("Please Sign in first!") }} className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col border shadow-card">
                   Sell Property
                   <img
                     src="src/assets/payment-method.png"

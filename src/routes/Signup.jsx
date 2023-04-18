@@ -34,6 +34,7 @@ export default function SignUp() {
         if (res.status === 201) {
           alert('Successfully registered');
         } else {
+          alert("failed");
           return;
         }
         return res.json();
