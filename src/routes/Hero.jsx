@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Tilt from 'react-tilt';
 import { motion } from 'framer-motion';
 
@@ -9,7 +9,10 @@ import { HouseCanvas } from '../components/canvas';
 import { LuxuryHouseCanvas } from '../components/canvas';
 import { MansionCanvas } from '../components/canvas';
 
+import { AuthContext } from '../context/AuthContext';
+
 const Hero = () => {
+  const { user } = useContext(AuthContext);
   const [userData, setUserData] = useState({});
   const isLoggedIn = window.localStorage.getItem('loggedIn');
   const [allUsers, setAllUsers] = useState({});
@@ -19,27 +22,51 @@ const Hero = () => {
   const [propertySell, setPropertySell] = useState(false);
   const [userName, setUserName] = useState('');
 
-  useEffect(() => {
-    fetch('http://localhost:5000/allUsers ', {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAllUsers(data.data);
-      });
-  }, []);
+  const [realEstateType, setRealEstateType] = useState('');
+  const [realEstatePrice, setRealEstatePrice] = useState('');
+
+  const [realEstateRent, setRealEstateRent] = useState('');
+
+  // useEffect(() => {
+  //   fetch('http://localhost:5000/allUsers ', {
+  //     method: 'GET',
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setAllUsers(data.data);
+  //     });
+  // }, []);
+
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     fetch('http://localhost:3000/my-assets', {
+  //       method: 'GET',
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         setUserData(data.data);
+  //       });
+  //   }
+  // }, [isLoggedIn, userData]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetch('http://localhost:3000/my-assets', {
+    setUserData(user);
+  }, [user]);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      fetch(import.meta.env.VITE_BACKEND_URL + '/api/users/all-users ', {
         method: 'GET',
       })
         .then((response) => response.json())
         .then((data) => {
-          setUserData(data.data);
+          console.log(data);
+          setAllUsers(data);
         });
-    }
-  }, [isLoggedIn, userData]);
+    };
+
+    getUserData();
+  }, []);
 
   const handleRent = (realEstateType, realEstatePrice) => {
     var myObj = new Object();
@@ -68,10 +95,41 @@ const Hero = () => {
     setUserData('');
   };
 
-  const handleBuy = (realEstateType, realEstatePrice) => {
+  const transaction = () => {
     var myObj = new Object();
     myObj[realEstateType] = realEstateType;
     myObj[realEstatePrice] = realEstatePrice;
+    myObj[buyer] = buyer;
+    myObj[seller] = seller;
+
+    fetch('http://localhost:5000/login-user', {
+      method: 'PUT',
+      crossDomain: true,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: JSON.stringify(myObj),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status == 'ok') {
+          alert('Property Bought Successfully');
+          window.location.href = '/';
+        }
+      });
+
+    setPropertyBuy(false);
+    setUserName('');
+    setUserData('');
+  };
+  const handleBuy = (realEstateType, realEstatePrice, buyer, seller) => {
+    var myObj = new Object();
+    myObj[realEstateType] = realEstateType;
+    myObj[realEstatePrice] = realEstatePrice;
+    myObj[buyer] = buyer;
+    myObj[seller] = seller;
 
     fetch('http://localhost:5000/login-user', {
       method: 'PUT',
@@ -181,8 +239,8 @@ const Hero = () => {
             city. Don't miss this opportunity to own a piece of the city
             skyline!
           </p>
-          {userData && isLoggedIn ? (
-            userData.realEstateOwned.filter(
+          {user ? (
+            user.realEstateOwned.filter(
               (item) => item.realEstateType == 'riverwalk'
             ) ? (
               <div className="mt-3 flex flex-wrap gap-10">
@@ -360,8 +418,8 @@ const Hero = () => {
             convenient living space. Don't miss out on this unique opportunity
             to own a stunning duplex apartment in a sought-after neighborhood!
           </p>
-          {userData && isLoggedIn ? (
-            userData.realEstateOwned.filter(
+          {user ? (
+            user.realEstateOwned.filter(
               (item) => item.realEstateType == 'summit'
             ) ? (
               <div className="mt-3 flex flex-wrap gap-10">
@@ -542,8 +600,8 @@ const Hero = () => {
             nearby. Don't miss this opportunity to make this stunning house your
             forever home!
           </p>
-          {userData && isLoggedIn ? (
-            userData.realEstateOwned.filter(
+          {user ? (
+            user.realEstateOwned.filter(
               (item) => item.realEstateType == 'sunflower'
             ) ? (
               <div className="mt-3 flex flex-wrap gap-10">
@@ -722,8 +780,8 @@ const Hero = () => {
             unparalleled privacy and sophistication. Don't miss this opportunity
             to own a truly exceptional and luxurious home!
           </p>
-          {userData && isLoggedIn ? (
-            userData.realEstateOwned.filter(
+          {user ? (
+            user.realEstateOwned.filter(
               (item) => item.realEstateType == 'highcliff'
             ) ? (
               <div className="mt-3 flex flex-wrap gap-10">
@@ -902,8 +960,8 @@ const Hero = () => {
             opportunity to own a truly remarkable and luxurious mansion that
             exudes sophistication and grandeur!
           </p>
-          {userData && isLoggedIn ? (
-            userData.realEstateOwned.filter(
+          {user ? (
+            user.realEstateOwned.filter(
               (item) => item.realEstateType == 'homestead'
             ) ? (
               <div className="mt-3 flex flex-wrap gap-10">
